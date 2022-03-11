@@ -26,19 +26,6 @@ type FakeWorkspace struct {
 		result1 wrapper.ExecutionOutput
 		result2 error
 	}
-	ImportStub        func(context.Context, wrapper.TerraformExecutor, map[string]string) error
-	importMutex       sync.RWMutex
-	importArgsForCall []struct {
-		arg1 context.Context
-		arg2 wrapper.TerraformExecutor
-		arg3 map[string]string
-	}
-	importReturns struct {
-		result1 error
-	}
-	importReturnsOnCall map[int]struct {
-		result1 error
-	}
 	ModuleDefinitionsStub        func() []wrapper.ModuleDefinition
 	moduleDefinitionsMutex       sync.RWMutex
 	moduleDefinitionsArgsForCall []struct {
@@ -175,69 +162,6 @@ func (fake *FakeWorkspace) ExecuteReturnsOnCall(i int, result1 wrapper.Execution
 		result1 wrapper.ExecutionOutput
 		result2 error
 	}{result1, result2}
-}
-
-func (fake *FakeWorkspace) Import(arg1 context.Context, arg2 wrapper.TerraformExecutor, arg3 map[string]string) error {
-	fake.importMutex.Lock()
-	ret, specificReturn := fake.importReturnsOnCall[len(fake.importArgsForCall)]
-	fake.importArgsForCall = append(fake.importArgsForCall, struct {
-		arg1 context.Context
-		arg2 wrapper.TerraformExecutor
-		arg3 map[string]string
-	}{arg1, arg2, arg3})
-	stub := fake.ImportStub
-	fakeReturns := fake.importReturns
-	fake.recordInvocation("Import", []interface{}{arg1, arg2, arg3})
-	fake.importMutex.Unlock()
-	if stub != nil {
-		return stub(arg1, arg2, arg3)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fakeReturns.result1
-}
-
-func (fake *FakeWorkspace) ImportCallCount() int {
-	fake.importMutex.RLock()
-	defer fake.importMutex.RUnlock()
-	return len(fake.importArgsForCall)
-}
-
-func (fake *FakeWorkspace) ImportCalls(stub func(context.Context, wrapper.TerraformExecutor, map[string]string) error) {
-	fake.importMutex.Lock()
-	defer fake.importMutex.Unlock()
-	fake.ImportStub = stub
-}
-
-func (fake *FakeWorkspace) ImportArgsForCall(i int) (context.Context, wrapper.TerraformExecutor, map[string]string) {
-	fake.importMutex.RLock()
-	defer fake.importMutex.RUnlock()
-	argsForCall := fake.importArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
-}
-
-func (fake *FakeWorkspace) ImportReturns(result1 error) {
-	fake.importMutex.Lock()
-	defer fake.importMutex.Unlock()
-	fake.ImportStub = nil
-	fake.importReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeWorkspace) ImportReturnsOnCall(i int, result1 error) {
-	fake.importMutex.Lock()
-	defer fake.importMutex.Unlock()
-	fake.ImportStub = nil
-	if fake.importReturnsOnCall == nil {
-		fake.importReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.importReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
 }
 
 func (fake *FakeWorkspace) ModuleDefinitions() []wrapper.ModuleDefinition {
@@ -588,8 +512,6 @@ func (fake *FakeWorkspace) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.executeMutex.RLock()
 	defer fake.executeMutex.RUnlock()
-	fake.importMutex.RLock()
-	defer fake.importMutex.RUnlock()
 	fake.moduleDefinitionsMutex.RLock()
 	defer fake.moduleDefinitionsMutex.RUnlock()
 	fake.moduleInstancesMutex.RLock()
